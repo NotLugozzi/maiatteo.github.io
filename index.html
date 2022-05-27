@@ -9,7 +9,11 @@
     <title>Document</title>
 </head>
 <body>
-    <script>let mapList = [409465, 129587, 454812, 275410, 418872, 418873];
+    <script>
+
+        let mapList = [409465, 129587, 454812, 275410, 418872, 418873];
+
+        let mapNameList = ["aa","bb","cc","dd","ee","ff"]
 
         let userList = []
         
@@ -29,28 +33,29 @@
         }
         
         funzione()
-        
-        
-        
-        /*function funzione () {
-            mapList.forEach(element => {
-                let pageNumber = 1;
-                fetch('https://api.codetabs.com/v1/proxy?quest=https://scoresaber.com/api/leaderboard/by-id/' + element + '/scores?countries=it&page=' + pageNumber, {
-                mode: 'cors',
-                headers: {
-                    "user-agent": "Application"
-                }}).then(
-                (res) => res.json())
-                .then(data => {
-                    createTable(data.scores)
-                    addPoints(data.scores)
-                }
-            )
-                
-            }) 
+
+        function countdownTimeStart(){
+
+        var countDownDate = new Date("Jun 04, 2022 23:59:59 GMT+2").getTime();
+
+        var x = setInterval(function() {
+
+            var now = new Date().getTime();
+            var distance = countDownDate - now;
+            var days = Math.ceil(distance / (1000 * 3600 * 24))
+            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
             
-        }*/
-        
+            document.getElementById("countdown").innerHTML = "Tempo rimasto per le qualificazioni: " + days + "gg " + hours + "h "
+            + minutes + "m " + seconds + "s ";
+            
+            if (distance < 0) {
+                clearInterval(x);
+                document.getElementById("countdown").innerHTML = "Il termine per le qualificazioni è scaduto.";
+            }
+        }, 1000);
+        }
         function funzione(){
             const promises = [];
             mapList.forEach(element => {
@@ -65,20 +70,21 @@
                 promises.push(apiCall);
                
             })
-        
+            mapName = 0;
             Promise.all(promises).then(data => {
                 data.forEach(datas => {
-                    createTable(datas.scores)
+                    createTable(datas.scores, mapNameList[mapName])
                     addPoints(datas.scores)
+                    mapName++;
                 });
                 printRankings(userList);
+                
             }
         )
         }
         
         
-        function createTable(data) {
-        
+        function createTable(data, nameToSet) {
             var headers = ["Rank", "Name", "Score", "Miss", "Punti"];
             var table = document.createElement("TABLE"); 
             table.classList.add("table")
@@ -116,7 +122,7 @@
             }
         
             var mapName = header.insertRow(0)
-            mapName.insertCell(0).innerHTML = "MAPPA"
+            mapName.insertCell(0).innerHTML = nameToSet
         
             document.body.append(table);
         }
@@ -176,10 +182,18 @@
             var mapName = header.insertRow(0)
             mapName.insertCell(0).innerHTML = "CLASSIFICA"
         
-            document.body.prepend(table);
+            document.getElementById("tables").prepend(table);
         
         }
+
+        countdownTimeStart()
         
         </script>
+
+    <div>
+        <h2 id="countdown"></h2>
+        <div id="tables"></div>
+
+    </div>
 </body>
 </html>
