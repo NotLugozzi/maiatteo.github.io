@@ -13,6 +13,8 @@
 
         let mapList = [376894, 434306, 384302, 394110, 404793, 423303];
 
+        let maxScoreList = [569595, 318435, 1122515, 2043435, 1306515, 1433475]
+
         let mapNameList = ["Monster - Joshabi - Normal",
         "Antithesis - EOP Glacier - Expert",
         "Yotsuya-san ni Yoroshiku - CoolingCloset - Expert+",
@@ -77,10 +79,12 @@
             })
             mapName = 0;
             Promise.all(promises).then(data => {
+                maxScoreIndex = 0
                 data.forEach(datas => {
-                    createTable(datas.scores, mapNameList[mapName])
+                    createTable(datas.scores, mapNameList[mapName], maxScoreList[maxScoreIndex])
                     addPoints(datas.scores)
                     mapName++;
+                    maxScoreIndex++;
                 });
                 printRankings(userList);
                 
@@ -89,7 +93,7 @@
         }
         
         
-        function createTable(data, nameToSet) {
+        function createTable(data, nameToSet, maxScore) {
             var headers = ["Rank", "Name", "Score", "Miss", "Punti"];
             var table = document.createElement("TABLE"); 
             table.classList.add("table")
@@ -99,7 +103,7 @@
                 
                 row.insertCell(0).innerHTML = data[i].rank;
                 row.insertCell(1).innerHTML = data[i].leaderboardPlayerInfo.name;
-                row.insertCell(2).innerHTML = data[i].baseScore;
+                row.insertCell(2).innerHTML = parseFloat((data[i].baseScore / maxScore)*100).toFixed(2) + "%"
                 row.insertCell(3).innerHTML = data[i].missedNotes + data[i].badCuts;
                 if(i < 4){
                     row.classList.add("alert", "alert-success")
