@@ -1,60 +1,51 @@
+
 <!DOCTYPE html>
 <html lang="it">
-
 <head>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
-
 <body>
-    <div>
-        <h2 id="countdown"></h2>
-        <div id="tables"></div>
+    <script>
 
-    </div>
-</body>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"
-    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-<script>
+        let mapList = [376894, 434306, 384302, 394110, 370992, 423303];
 
-    const mapList = [376894, 434306, 384302, 394110, 370992, 423303];
+        let maxScoreList = [569595, 318435, 1122515, 2043435, 1732475, 1433475]
 
-    const maxScoreList = [569595, 318435, 1122515, 2043435, 1732475, 1433475]
-
-    const mapNameList = ["Monster - Joshabi - Normal",
+        let mapNameList = ["Monster - Joshabi - Normal",
         "Antithesis - EOP Glacier - Expert",
         "Yotsuya-san ni Yoroshiku - CoolingCloset - Expert+",
         "Mystery Circles Ultra / U.U.F.O. - cerret - Expert",
-        "Everytime we Touch - cerret - Expert+",
+        "Everytime we Touch - cerret - Expert+", 
         "Kingslayer - Nolanimations - Expert+"]
 
-    const userList = []
-
-    class Utente {
-
-        name;
-        points = 0;
-        constructor(name, points) {
-            this.name = name,
+        let userList = []
+        
+        class Utente{
+            name;
+            points = 0;
+            constructor(name, points){
+                this.name = name,
                 this.points = points;
+            }
+        
+            increasePoints(number){
+                this.points += number;
+            }
+        
+            
         }
+        
+        funzione()
 
-        increasePoints(number) {
-            this.points += number;
-        }
-
-
-    }
-
-    function countdownTimeStart() {
+        function countdownTimeStart(){
 
         var countDownDate = new Date("Jun 04, 2022 23:59:59 GMT+2").getTime();
 
-        var x = setInterval(function () {
+        var x = setInterval(function() {
 
             var now = new Date().getTime();
             var distance = countDownDate - now;
@@ -62,141 +53,156 @@
             var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
             var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
+            
             document.getElementById("countdown").innerHTML = "Tempo rimasto per le qualificazioni: " + days + "gg " + hours + "h "
-                + minutes + "m " + seconds + "s ";
-
+            + minutes + "m " + seconds + "s ";
+            
             if (distance < 0) {
                 clearInterval(x);
                 document.getElementById("countdown").innerHTML = "Il termine per le qualificazioni è scaduto.";
             }
         }, 1000);
-    }
-    
-    function createTable(data, nameToSet, maxScore) {
-        const headers = ["Rank", "Name", "Score", "Miss", "Punti"];
-        var table = document.createElement("TABLE");
-        table.classList.add("table")
-
-        for (var i = 0; i < data.length; i++) {
-            var row = table.insertRow(i);
-
-            row.insertCell(0).innerHTML = data[i].rank;
-            row.insertCell(1).innerHTML = data[i].leaderboardPlayerInfo.name;
-            row.insertCell(2).innerHTML = parseFloat((data[i].baseScore / maxScore) * 100).toFixed(2) + "%"
-            row.insertCell(3).innerHTML = data[i].missedNotes + data[i].badCuts;
-            if (i < 4) {
-                row.classList.add("alert", "alert-success")
-                row.insertCell(4).innerHTML = 1000
-            }
-            if (i < 6 && i >= 4) {
-                row.classList.add("alert", "alert-warning")
-                if (i == 4) {
-                    row.insertCell(4).innerHTML = 100
-                }
-                else {
-                    row.insertCell(4).innerHTML = 10
-                }
-            }
-            if (i >= 6) {
-                row.classList.add("alert", "alert-danger")
-                row.insertCell(4).innerHTML = 1
-            }
         }
-
-        var header = table.createTHead();
-        var headerRow = header.insertRow(0);
-        for (var i = 0; i < headers.length; i++) {
-            headerRow.insertCell(i).innerHTML = headers[i];
-        }
-
-        var mapName = header.insertRow(0)
-        mapName.insertCell(0).innerHTML = nameToSet
-
-        document.body.append(table);
-    }
-    function addPoints(data) {
-
-
-        for (var i = 0; i < data.length; i++) {
-            let addedPoints = 0;
-            if (data[i].rank <= 4) {
-                addedPoints += 1000;
-            }
-            else if (data[i].rank == 5) {
-                addedPoints += 100;
-            }
-            else if (data[i].rank == 6) {
-                addedPoints += 10;
-            }
-            else {
-                addedPoints += 1;
-            }
-            if (!userList.find(x => x.name == data[i].leaderboardPlayerInfo.name)) {
-                userList.push(new Utente(data[i].leaderboardPlayerInfo.name, addedPoints))
-            }
-            else {
-                userList.find(x => x.name == data[i].leaderboardPlayerInfo.name).increasePoints(addedPoints)
-            }
-        }
-    }
-    function printRankings(userList) {
-
-        userList.sort((a, b) => b.points - a.points);
-        var headers = ["Rank", "Name", "Points"];
-        var table = document.createElement("TABLE");
-        table.classList.add("table")
-        for (var i = 0; i < userList.length; i++) {
-            var row = table.insertRow(i);
-            row.insertCell(0).innerHTML = i + 1
-            row.insertCell(1).innerHTML = userList[i].name
-            row.insertCell(2).innerHTML = userList[i].points
-            if (i < 8) {
-                row.classList.add("alert", "alert-success")
-            }
-            else {
-                row.classList.add("alert", "alert-danger")
-            }
-        }
-
-
-        var header = table.createTHead();
-        var headerRow = header.insertRow(0);
-        for (var i = 0; i < headers.length; i++) {
-            headerRow.insertCell(i).innerHTML = headers[i];
-        }
-
-        var mapName = header.insertRow(0)
-        mapName.insertCell(0).innerHTML = "CLASSIFICA"
-
-        document.getElementById("tables").prepend(table);
-
-    }
-    var data;
-    var mapName = 0;
-    var maxScoreIndex = 0
-    $(document).ready(function () {
-        mapList.forEach(element => {
-            let pageNumber = 1;
-            $.ajax({
-                url: 'https://api.codetabs.com/v1/proxy?quest=https://scoresaber.com/api/leaderboard/by-id/' + element + '/scores?countries=it&page=' + pageNumber,
-                method: 'get',
-                dataType: 'json',
-                crossDomain: true,
-                complete: function (jqXHR, status) {
-                    createTable(jqXHR.responseJSON.scores, mapNameList[mapName], maxScoreList[maxScoreIndex])
-                    addPoints(jqXHR.responseJSON.scores)
+        function funzione(){
+            const promises = [];
+            mapList.forEach(element => {
+                let pageNumber = 1;
+                const apiCall =  fetch('https://api.codetabs.com/v1/proxy?quest=https://scoresaber.com/api/leaderboard/by-id/' + element + '/scores?countries=it&page=' + pageNumber, {
+                    mode: 'cors',
+                    headers: {
+                        "user-agent": "Application"
+                    }}).then(
+                    (res) => res.json())
+              
+                promises.push(apiCall);
+               
+            })
+            mapName = 0;
+            Promise.all(promises).then(data => {
+                maxScoreIndex = 0
+                data.forEach(datas => {
+                    createTable(datas.scores, mapNameList[mapName], maxScoreList[maxScoreIndex])
+                    addPoints(datas.scores)
                     mapName++;
                     maxScoreIndex++;
+                });
+                printRankings(userList);
+                
+            }
+        )
+        }
+        
+        
+        function createTable(data, nameToSet, maxScore) {
+            var headers = ["Rank", "Name", "Score", "Miss", "Punti"];
+            var table = document.createElement("TABLE"); 
+            table.classList.add("table")
+                
+            for(var i = 0; i < data.length; i++) {
+                var row = table.insertRow(i);
+                
+                row.insertCell(0).innerHTML = data[i].rank;
+                row.insertCell(1).innerHTML = data[i].leaderboardPlayerInfo.name;
+                row.insertCell(2).innerHTML = parseFloat((data[i].baseScore / maxScore)*100).toFixed(2) + "%"
+                row.insertCell(3).innerHTML = data[i].missedNotes + data[i].badCuts;
+                if(i < 4){
+                    row.classList.add("alert", "alert-success")
+                    row.insertCell(4).innerHTML = 1000
                 }
-            })
-        }); 
-        countdownTimeStart()
-    })
-    $(document).ajaxStop(function(){
-        printRankings(userList)
-    })
-    
-</script>
+                if(i < 6 && i >= 4) {
+                    row.classList.add("alert", "alert-warning")
+                    if(i == 4) {
+                        row.insertCell(4).innerHTML = 100
+                    }
+                    else{
+                        row.insertCell(4).innerHTML = 10
+                    }
+                }
+                if(i >= 6 ) {
+                    row.classList.add("alert", "alert-danger")
+                    row.insertCell(4).innerHTML = 1
+                }
+            }
+        
+            var header = table.createTHead();
+            var headerRow = header.insertRow(0);
+            for(var i = 0; i < headers.length; i++) {
+                headerRow.insertCell(i).innerHTML = headers[i];
+            }
+        
+            var mapName = header.insertRow(0)
+            mapName.insertCell(0).innerHTML = nameToSet
+        
+            document.body.append(table);
+        }
+        
+        function addPoints(data) {
+            
+            
+            for(var i = 0; i < data.length; i++) {
+                let addedPoints = 0;
+                if(data[i].rank <= 4){
+                    addedPoints += 1000;
+                }
+                else if(data[i].rank == 5){
+                    addedPoints += 100;
+                }
+                else if(data[i].rank == 6){
+                    addedPoints += 10;
+                }
+                else {
+                    addedPoints += 1;
+                }
+                if(!userList.find(x => x.name == data[i].leaderboardPlayerInfo.name)){
+                    userList.push(new Utente(data[i].leaderboardPlayerInfo.name, addedPoints))
+                }
+                else{
+                    userList.find(x => x.name == data[i].leaderboardPlayerInfo.name).increasePoints(addedPoints)
+                }
+            }
+        }
+        
+        function printRankings(userList) {
+        
+            userList.sort((a, b) => b.points - a.points);
+            var headers = ["Rank", "Name", "Points"];
+            var table = document.createElement("TABLE"); 
+            table.classList.add("table")
+            for(var i = 0; i < userList.length; i++) {
+                var row = table.insertRow(i);
+                row.insertCell(0).innerHTML = i+1
+                row.insertCell(1).innerHTML = userList[i].name
+                row.insertCell(2).innerHTML = userList[i].points
+                if(i < 8){
+                    row.classList.add("alert", "alert-success")
+                }
+                else {
+                    row.classList.add("alert", "alert-danger")
+                }
+            }
+            
+        
+            var header = table.createTHead();
+            var headerRow = header.insertRow(0);
+            for(var i = 0; i < headers.length; i++) {
+                headerRow.insertCell(i).innerHTML = headers[i];
+            }
+        
+            var mapName = header.insertRow(0)
+            mapName.insertCell(0).innerHTML = "CLASSIFICA"
+        
+            document.getElementById("tables").prepend(table);
+        
+        }
 
+        countdownTimeStart()
+        
+        </script>
+
+    <div>
+        <h2 id="countdown"></h2>
+        <div id="tables"></div>
+
+    </div>
+</body>
 </html>
