@@ -1,13 +1,13 @@
 import requests
 import json
 from jinja2 import Template
-map_id = "359999"
+map_id = "408454"
 response = requests.get(f'https://api.codetabs.com/v1/proxy?quest=https://scoresaber.com/api/leaderboard/by-id/{map_id}/scores?countries=it&page=1')
 if response.status_code == 200:
     scores_dict = response.json()
     # print(scores_dict) godo
     scores = scores_dict['scores'][:10]
-    with open('scores.json', 'w') as f:
+    with open('scores.json', 'w', encoding="utf-16") as f:
      json.dump(scores, f)
     player_score = {
     'playerId': '12345',
@@ -45,7 +45,7 @@ if response.status_code == 200:
     </html>
     """)
     html = template.render(scores=scores)
-    with open("index.html", "w") as f:
+    with open("index.html", "w", encoding="utf-16") as f:
      f.write(html)
     with open('scores.json', 'w') as f:
      json.dump(scores, f)    
