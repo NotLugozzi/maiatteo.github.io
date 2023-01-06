@@ -1,26 +1,21 @@
 import requests
 import json
 from jinja2 import Template
-map_id = "408454"
+map_id = "280304"
 response = requests.get(f'https://api.codetabs.com/v1/proxy?quest=https://scoresaber.com/api/leaderboard/by-id/{map_id}/scores?countries=it&page=1')
+pizzi = requests.get(f"https://api.codetabs.com/v1/proxy?quest=https://scoresaber.com/api/leaderboard/by-id/{map_id}/scores?countries=us&search=sionpizzi")
 if response.status_code == 200:
     scores_dict = response.json()
+    h = str(pizzi)
+    newpizzi = h.replace("{'metadata': {'itemsPerPage': 12, 'page': 1, 'total': 1}, 'scores': [", "")
+    pizzi_json = newpizzi.json()
+    print(pizzi_json)
     # print(scores_dict) godo
     scores = scores_dict['scores'][:10]
     with open('scores.json', 'w', encoding="utf-16") as f:
      json.dump(scores, f)
-    player_score = {
-    'playerId': '12345',
-    'country': 'other_country',
-    'baseScore': 100000,
-    'rank': 30,
-    'pp': 1000,
-    'leaderboardPlayerInfo': {
-            'name': 'PlaceholderPizzi',
-    }
-    }
-    scores.append(player_score)
-    scores.sort(key=lambda score: score['rank'], reverse=False)
+    scores.append(pizzi_json)
+    scores.sort(key=lambda score: score['baseScore'], reverse=False)
     #placeholder
     template = Template("""
     <html>
