@@ -1,6 +1,5 @@
 import requests
 import json
-from jinja2 import Template
 map_id = "379722"
 response = requests.get(f'https://scoresaber.com/api/leaderboard/by-id/{map_id}/scores?countries=it&page=1')
 pizzi = requests.get(f"https://scoresaber.com/api/leaderboard/by-id/{map_id}/scores?countries=us&search=sionpizzi")
@@ -23,52 +22,53 @@ if response.status_code == 200:
     #print(scores)
     print("scrivo scores.json")
     with open('scores.json', 'w', encoding="utf-16") as f:
-     json.dump(scores, f)
+     json.dump(scores, f, indent=2)
     print("scores.json scritto")
     scores.sort(key=lambda score: score['baseScore'], reverse=True)
-    #placeholder
-    template = Template("""
-    <html>
-    <head>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-        <title>BSEUC Qualifiers Italia</title>
-        <style>
-           table, th, td {
-           border: 2px solid black;
-           text-align: center;
-           }
-           h1, h2, h3{
-           text-align: center;
-           }
-           .center {
-            margin-left: auto;
-            margin-right: auto;
-            }
-        </style>
-    </head>
-    <body>
-        <h3>placeholder map name</h3>
-        <table class="center">
-        <tr>
-            <th style="padding:10px">Player</th>
-            <th style="padding:10px">Score</th>
-            <th style="padding:10px">FC</th>
-        </tr>
-        {% for score in scores %}
-           <tr>
-            <td>{{ score.leaderboardPlayerInfo.name }}</td>
-            <td>{{ score.baseScore }}</td>
-            <td>{{ score.fullCombo }}</td>
-          </tr>
-          {% endfor %}
-        </table>
-      </body>
-    </html>
-    """)
-    html = template.render(scores=scores)
-    with open("index.html", "w", encoding="utf-16") as f:
-     f.write(html)
+html = '<html>\n'
+html += '<head>\n'
+html += '<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">\n'
+html += "<title>BSEUC Qualifiers Italia</title>\n"
+html += "<style>\n"
+html += "   table, th, td {\n"
+html += "   border: 2px solid black;\n"
+html += "   text-align: center;\n"
+html += "   }\n"
+html += "   h1, h2, h3{\n"
+html += "   text-align: center;\n"
+html += "   }\n"
+html += "   .center {\n"
+html += "   margin-left: auto;\n"
+html += "   margin-right: auto;\n"
+html += "   }\n"
+html += "</style>\n"
+html += '</head>\n'
+html += '<table class="table">\n'
+html += '  <thead>\n'
+html += '    <tr>\n'
+html += '      <th scope="col">Name</th>\n'
+html += '      <th scope="col">Score</th>\n'
+html += '      <th scope="col">FC</th>\n'
+html += '    </tr>\n'
+html += '  </thead>\n'
+html += '  <tbody>\n'
+
+for i, item in enumerate(scores):
+    row_class = ""
+    if i < 3:
+        row_class = "table-success"
+    elif i == 3:
+        row_class = "alert-warning"
+    else:
+        row_class = "table-danger"
+    html += f'    <tr class="{row_class}">\n'
+    html += f'      <td>{item["leaderboardPlayerInfo"]["name"]}</td>\n'
+    html += f'      <td>{item["baseScore"]}</td>\n'
+    html += f'      <td>{item["fullCombo"]}</td>\n'
+    html += '    </tr>\n'
+
+html += '  </tbody>\n'
+html += '</table>\n'
+with open("index.html", "w", encoding="utf-16") as f:
+    f.write(html)
     print("index.html scritto")
-else:
-    print("An error occurred:", response.status_code)
-    print("mado rip lol")
