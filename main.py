@@ -1,6 +1,6 @@
 import requests
 import json
-map_id = "379722"
+map_id = "370710"
 response = requests.get(f'https://scoresaber.com/api/leaderboard/by-id/{map_id}/scores?countries=it&page=1')
 pizzi = requests.get(f"https://scoresaber.com/api/leaderboard/by-id/{map_id}/scores?countries=us&search=sionpizzi")
 def has_error_message(json_data):
@@ -46,9 +46,11 @@ html += '</head>\n'
 html += '<table class="table">\n'
 html += '  <thead>\n'
 html += '    <tr>\n'
+html += '      <th scope="col">#</th>\n'
 html += '      <th scope="col">Name</th>\n'
 html += '      <th scope="col">Score</th>\n'
 html += '      <th scope="col">FC</th>\n'
+html += '      <th scope="col">Punti</th>\n'
 html += '    </tr>\n'
 html += '  </thead>\n'
 html += '  <tbody>\n'
@@ -61,10 +63,21 @@ for i, item in enumerate(scores):
         row_class = "alert-warning"
     else:
         row_class = "table-danger"
+    points = 1
+    if i < 3:
+        points = 1000
+    elif i == 3:
+        points = 100
+    elif i == 4:
+        points = 10
+    elif i == 5:
+        points = 1
     html += f'    <tr class="{row_class}">\n'
+    html += f'      <th scope="row">{i + 1}</th>\n'
     html += f'      <td>{item["leaderboardPlayerInfo"]["name"]}</td>\n'
     html += f'      <td>{item["baseScore"]}</td>\n'
     html += f'      <td>{item["fullCombo"]}</td>\n'
+    html += f'      <td>{points}</td>\n'
     html += '    </tr>\n'
 
 html += '  </tbody>\n'
